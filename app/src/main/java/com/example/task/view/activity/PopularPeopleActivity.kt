@@ -19,15 +19,12 @@ class MainActivity : AppCompatActivity() {
     lateinit var popularPeopleViewModel: PopularPeopleViewModel
 
     var my_page = 1
-    // val popularPeopleDataList: List<PopularPeopleModel.Result> = ArrayList<PopularPeopleModel.Result>()
-    //lateinit var popularPeopleDataList: List<PopularPeopleModel.Result>
-   // var PopularPeopleDataList: List<PopularPeopleModel.Result>? = null
-    lateinit var popularPeopleDataList: MutableList<PopularPeopleModel.Result>
+
     lateinit var endlessScrollListener: EndlessScrollListener
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        popularPeopleDataList=  mutableListOf<PopularPeopleModel.Result>()
+
         popularPeopleViewModel =
             ViewModelProvider(this)[PopularPeopleViewModel::class.java]
 
@@ -43,7 +40,7 @@ class MainActivity : AppCompatActivity() {
                 recyclerPopularPeople.apply {
                     layoutManager = GridLayoutManager(applicationContext, 2)
                     // recyclerPopularPeople.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
-                    popularPeopleAdapter = PopularPeopleAdapter(popularPeopleModel)
+                    popularPeopleAdapter = PopularPeopleAdapter(popularPeopleModel.results)
                     adapter = popularPeopleAdapter
                 }
 
