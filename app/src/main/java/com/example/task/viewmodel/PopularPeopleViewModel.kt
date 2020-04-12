@@ -17,7 +17,7 @@ class PopularPeopleViewModel : ViewModel(){
     public var popularPeopleListMutableLiveData: MutableLiveData<PopularPeopleModel>? = null
     private lateinit var context: Context
 
-
+    public var searchPeopleMutableLiveData: MutableLiveData<PopularPeopleModel>? = null
     public fun getPopularPeopleList(context: Context, Api_key: String, Language:String, Page:Int)
             : LiveData<PopularPeopleModel> {
         popularPeopleListMutableLiveData = MutableLiveData<PopularPeopleModel>()
@@ -52,6 +52,41 @@ class PopularPeopleViewModel : ViewModel(){
             }
         })
 
+    }
+
+
+    public fun searchPeopleResult(context: Context, Api_key: String, Language:String, Query:String,Page:Int,Include_adult:Boolean,Region:String)
+            : LiveData<PopularPeopleModel> {
+        searchPeopleMutableLiveData = MutableLiveData<PopularPeopleModel>()
+        this.context = context
+        searchPeopleResultValues(Api_key,Language,Query,Page,Include_adult,Region)
+
+        //  return listProductsMutableLiveData
+        return searchPeopleMutableLiveData as MutableLiveData<PopularPeopleModel>
+    }
+
+    private fun searchPeopleResultValues( api_key:String, language:String, query:String,page:Int,include_adult:Boolean,region:String) {
+        val call = APIClient.getClient()?.create(APIInterface::class.java)
+            ?.searchPeople(api_key,language,query,page,include_adult,region)
+        call?.enqueue(object : Callback, retrofit2.Callback<PopularPeopleModel> {
+            override fun onResponse(
+                call: Call<PopularPeopleModel>,
+                response: Response<PopularPeopleModel>
+            ) {
+
+                if (response.code() == 200) {
+                    searchPeopleMutableLiveData?.setValue(response.body())
+
+                } else {
+                    searchPeopleMutableLiveData?.setValue(null)
+                }
+            }
+
+            override fun onFailure(call: Call<PopularPeopleModel>, t: Throwable) {
+                searchPeopleMutableLiveData?.setValue(null)
+
+            }
+        })
 
     }
 }

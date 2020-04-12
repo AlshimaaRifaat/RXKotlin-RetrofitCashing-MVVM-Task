@@ -1,33 +1,37 @@
 package com.example.task
 
 
+
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.text.TextUtils
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.task.model.popularpeople.KnownFor
+import com.example.task.interfaceview.PopularPeopleDetailsView
 import com.example.task.model.popularpeople.PopularPeopleModel
 import com.example.task.model.popularpeople.result
 import com.example.task.paging.EndlessRecyclerViewScrollListener
+import com.example.task.view.activity.DetailsPopularPeopleActivity
+import com.example.task.view.activity.SearchResultActivity
 import com.example.task.view.adapter.PopularPeopleAdapter
 import com.example.task.viewmodel.PopularPeopleViewModel
 import kotlinx.android.synthetic.main.activity_main.*
-import javax.security.auth.login.LoginException
-import kotlin.math.log
+import kotlinx.android.synthetic.main.activity_main.etSearch
+import kotlinx.android.synthetic.main.activity_search_result.*
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),PopularPeopleDetailsView{
     lateinit var popularPeopleAdapter: PopularPeopleAdapter
     lateinit var popularPeopleViewModel: PopularPeopleViewModel
     var my_page = 1
-
     lateinit var result_List: MutableList<result>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -36,14 +40,13 @@ class MainActivity : AppCompatActivity() {
             ViewModelProvider(this)[PopularPeopleViewModel::class.java]
 
         recyclerPopularPeople.apply {
-            layoutManager = GridLayoutManager(applicationContext,2)
+            layoutManager = LinearLayoutManager(applicationContext)
             recyclerPopularPeople.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
             popularPeopleAdapter = PopularPeopleAdapter(result_List)
+            popularPeopleAdapter.onClick(this@MainActivity)
             adapter = popularPeopleAdapter
-
-
             recyclerPopularPeople.addOnScrollListener(object :
-                EndlessRecyclerViewScrollListener(layoutManager as GridLayoutManager) {
+                EndlessRecyclerViewScrollListener(layoutManager as LinearLayoutManager) {
                 override fun onLoadMore(
                     page: Int,
                     totalItemsCount: Int,
@@ -54,25 +57,49 @@ class MainActivity : AppCompatActivity() {
             })
 
         }
-
-
         popularPeopleList(my_page);
+
+        etSearch.setOnClickListener { sendKeySearch() }
+
     }
+
+    private fun sendKeySearch() {
+            if (etSearch.length()>=3) {
+                val intent = Intent(this, SearchResultActivity::class.java)
+                intent.putExtra("key", etSearch.text.toString())
+                startActivity(intent)
+            }else
+            {
+                Toast.makeText(this,getResources().getString(R.string.PleaseCharacters),Toast.LENGTH_LONG).show()
+            }
+
+
+    }
+
 
     private fun popularPeopleList (page:Int){
         popularPeopleViewModel.getPopularPeopleList(applicationContext,"889821def8006c20b36edf63a80b98fd",
-            "en-US",page).observe(this,
+            "en-US",1).observe(this,
             Observer<PopularPeopleModel> { popularPeopleModel ->
-
-                result_List.addAll(popularPeopleModel.results)
-                Toast.makeText(this,result_List.size.toString(),Toast.LENGTH_LONG).show()
-                popularPeopleAdapter.notifyItemRangeInserted(
-                    popularPeopleAdapter.getItemCount(),
-                    result_List.size
-                )
-
+                if(popularPeopleModel.results!=null) {
+                    result_List.addAll(popularPeopleModel.results)
+                    // Toast.makeText(this,result_List.size.toString(),Toast.LENGTH_LONG).show()
+                    popularPeopleAdapter.notifyItemRangeInserted(
+                        popularPeopleAdapter.getItemCount(),
+                        result_List.size
+                    )
+                }
             })
             }
+
+    override fun showPopularPeopleDetails(mresult: result) {
+        val intent = Intent(this, DetailsPopularPeopleActivity::class.java)
+        intent.putExtra("personId",mresult.id.toString())
+        intent.putExtra("name",mresult.name)
+        intent.putExtra("popularity",mresult.popularity.toString())
+        intent.putExtra("img",mresult.profilePath)
+        startActivity(intent)
+    }
 
 
 }

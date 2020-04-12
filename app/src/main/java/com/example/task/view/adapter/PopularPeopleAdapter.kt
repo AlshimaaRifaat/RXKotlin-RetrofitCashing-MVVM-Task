@@ -11,20 +11,27 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.task.R
+import com.example.task.interfaceview.PopularPeopleDetailsView
 import com.example.task.model.popularpeople.result
 //import com.example.task.model.result
 
 class PopularPeopleAdapter(var resultList: List<result>) : RecyclerView.Adapter<PopularPeopleAdapter.ViewHolder>() {
-
+     lateinit var popularPeopleDetailsView :PopularPeopleDetailsView
     //this method is returning the view for each item in the list
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PopularPeopleAdapter.ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.row_popular_people, parent, false)
         return ViewHolder(v)
     }
-
+    public fun onClick(popularPeopleDetailsView :PopularPeopleDetailsView)
+    {
+        this.popularPeopleDetailsView=popularPeopleDetailsView
+    }
     //this method is binding the data on the list
     override fun onBindViewHolder(holder: PopularPeopleAdapter.ViewHolder, position: Int) {
         holder.bindItems(resultList[position])
+        holder.itemView.setOnClickListener {
+            popularPeopleDetailsView.showPopularPeopleDetails(resultList[position])
+        }
     }
 
     //this method is giving the size of the list
@@ -36,11 +43,12 @@ class PopularPeopleAdapter(var resultList: List<result>) : RecyclerView.Adapter<
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bindItems(mResult: result) {
-          //  val img = itemView.findViewById(R.id.img) as ImageView
+            val img = itemView.findViewById(R.id.img) as ImageView
             val tName  = itemView.findViewById(R.id.tName) as TextView
-
+            val tPopularity  = itemView.findViewById(R.id.tPopularity) as TextView
            // img.loadImage(Constants.IMAGE_BASE_URL+referncesModel.refrenceImage)
-            tName.text = mResult.knownFor.get(0).originalName
+            tName.text = mResult.name
+            tPopularity.text = mResult.popularity.toString()
 
         }
     }

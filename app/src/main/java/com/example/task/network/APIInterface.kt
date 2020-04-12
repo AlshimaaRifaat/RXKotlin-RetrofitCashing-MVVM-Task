@@ -11,4 +11,12 @@ interface APIInterface {
     fun popularPeople_List(@Query("api_key") api_key: String,
                            @Query("language") language: String,
                            @Query("page") page: Int): Call<PopularPeopleModel>
+
+    @GET("search/person")
+    fun searchPeople(@Query("api_key") api_key: String,
+                           @Query("language") language: String,
+                           @Query("query") query: String,
+                           @Query("page") page: Int,
+                           @Query("include_adult") include_adult: Boolean,
+                           @Query("region") region: String): Call<PopularPeopleModel>
 }
