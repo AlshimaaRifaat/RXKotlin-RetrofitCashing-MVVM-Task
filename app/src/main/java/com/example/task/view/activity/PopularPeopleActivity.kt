@@ -4,26 +4,22 @@ package com.example.task
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.TextUtils
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.task.interfaceview.PopularPeopleDetailsView
 import com.example.task.model.popularpeople.PopularPeopleModel
 import com.example.task.model.popularpeople.result
-import com.example.task.paging.EndlessRecyclerViewScrollListener
+import com.example.task.paging.EndlessScrollListener
 import com.example.task.view.activity.DetailsPopularPeopleActivity
 import com.example.task.view.activity.SearchResultActivity
 import com.example.task.view.adapter.PopularPeopleAdapter
 import com.example.task.viewmodel.PopularPeopleViewModel
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main.etSearch
-import kotlinx.android.synthetic.main.activity_search_result.*
+import kotlinx.android.synthetic.main.activity_main.view.*
 
 
 class MainActivity : AppCompatActivity(),PopularPeopleDetailsView{
@@ -32,6 +28,9 @@ class MainActivity : AppCompatActivity(),PopularPeopleDetailsView{
     var my_page = 1
     lateinit var result_List: MutableList<result>
 
+    var totalPages:Int=0
+
+    lateinit var endlessScrollListener: EndlessScrollListener
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -41,20 +40,25 @@ class MainActivity : AppCompatActivity(),PopularPeopleDetailsView{
 
         recyclerPopularPeople.apply {
             layoutManager = LinearLayoutManager(applicationContext)
-            recyclerPopularPeople.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+            recyclerPopularPeople.setItemAnimator(DefaultItemAnimator())
             popularPeopleAdapter = PopularPeopleAdapter(result_List)
             popularPeopleAdapter.onClick(this@MainActivity)
             adapter = popularPeopleAdapter
-            recyclerPopularPeople.addOnScrollListener(object :
-                EndlessRecyclerViewScrollListener(layoutManager as LinearLayoutManager) {
-                override fun onLoadMore(
-                    page: Int,
-                    totalItemsCount: Int,
-                    view: RecyclerView?) {
-                    my_page++
-                    popularPeopleList(my_page)
+
+            endlessScrollListener = object : EndlessScrollListener(layoutManager!!) {
+                override fun onLoadMore(currentPage: Int, totalItemCount: Int) {
+                    if(currentPage<totalPages) {
+                        my_page++
+                        popularPeopleList(my_page)
+                    }
                 }
-            })
+
+                override fun onScroll(firstVisibleItem: Int, dy: Int, scrollPosition: Int) {}
+            }
+
+            recyclerPopularPeople.addOnScrollListener(endlessScrollListener)
+
+
 
         }
         popularPeopleList(my_page);
@@ -79,15 +83,17 @@ class MainActivity : AppCompatActivity(),PopularPeopleDetailsView{
 
     private fun popularPeopleList (page:Int){
         popularPeopleViewModel.getPopularPeopleList(applicationContext,"889821def8006c20b36edf63a80b98fd",
-            "en-US",1).observe(this,
+            "en-US",page).observe(this,
             Observer<PopularPeopleModel> { popularPeopleModel ->
                 if(popularPeopleModel.results!=null) {
+                    this.totalPages=popularPeopleModel.totalPages
                     result_List.addAll(popularPeopleModel.results)
-                    // Toast.makeText(this,result_List.size.toString(),Toast.LENGTH_LONG).show()
+
                     popularPeopleAdapter.notifyItemRangeInserted(
                         popularPeopleAdapter.getItemCount(),
                         result_List.size
                     )
+                    Toast.makeText(this,popularPeopleAdapter.getItemCount().toString(),Toast.LENGTH_LONG).show()
                 }
             })
             }
