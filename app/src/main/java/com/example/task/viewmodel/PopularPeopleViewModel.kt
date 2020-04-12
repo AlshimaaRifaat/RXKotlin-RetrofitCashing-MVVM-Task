@@ -4,7 +4,8 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.task.model.PopularPeopleModel
+//import com.example.task.model.PopularPeopleModel
+import com.example.task.model.popularpeople.PopularPeopleModel
 import com.example.task.network.APIClient
 import com.example.task.network.APIInterface
 import org.intellij.lang.annotations.Language

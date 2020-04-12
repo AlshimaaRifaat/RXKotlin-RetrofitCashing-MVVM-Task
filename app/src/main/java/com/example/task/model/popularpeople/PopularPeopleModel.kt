@@ -1,9 +1,10 @@
-package com.example.task.model
+package com.example.task.model.popularpeople
 
 
 import com.google.gson.annotations.SerializedName
 //import android.support.annotation.Keep
 import androidx.annotation.Keep
+
 
 @Keep
 data class PopularPeopleModel(

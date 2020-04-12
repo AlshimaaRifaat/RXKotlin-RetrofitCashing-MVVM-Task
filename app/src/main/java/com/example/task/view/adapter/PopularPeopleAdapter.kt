@@ -11,9 +11,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.task.R
-import com.example.task.model.result
+import com.example.task.model.popularpeople.result
+//import com.example.task.model.result
 
-class PopularPeopleAdapter(val resultList: List<result>) : RecyclerView.Adapter<PopularPeopleAdapter.ViewHolder>() {
+class PopularPeopleAdapter(var resultList: List<result>) : RecyclerView.Adapter<PopularPeopleAdapter.ViewHolder>() {
 
     //this method is returning the view for each item in the list
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PopularPeopleAdapter.ViewHolder {
