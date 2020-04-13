@@ -2,8 +2,11 @@ package com.example.task
 
 
 
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -31,6 +34,7 @@ class MainActivity : AppCompatActivity(),PopularPeopleDetailsView{
     var totalPages:Int=0
 
     lateinit var endlessScrollListener: EndlessScrollListener
+    //private val kProgressHUD: KProgressHUD? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -79,24 +83,43 @@ class MainActivity : AppCompatActivity(),PopularPeopleDetailsView{
 
 
     }
+    val isConnected:Boolean
+        get() {
+            return (getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
+                .activeNetworkInfo?.isConnected == true
+        }
 
+    private fun popularPeopleList (page:Int) {
+        if (isConnected) {
+            progressBar_people.visibility= View.VISIBLE
+            popularPeopleViewModel.getPopularPeopleList(
+                applicationContext, "889821def8006c20b36edf63a80b98fd",
+                "en-US", page
+            ).observe(this,
+                Observer<PopularPeopleModel> { popularPeopleModel ->
+                    if (popularPeopleModel.results != null) {
+                        progressBar_people.visibility=View.GONE
+                        this.totalPages = popularPeopleModel.totalPages
+                        result_List.addAll(popularPeopleModel.results)
 
-    private fun popularPeopleList (page:Int){
-        popularPeopleViewModel.getPopularPeopleList(applicationContext,"889821def8006c20b36edf63a80b98fd",
-            "en-US",page).observe(this,
-            Observer<PopularPeopleModel> { popularPeopleModel ->
-                if(popularPeopleModel.results!=null) {
-                    this.totalPages=popularPeopleModel.totalPages
-                    result_List.addAll(popularPeopleModel.results)
+                        popularPeopleAdapter.notifyItemRangeInserted(
+                            popularPeopleAdapter.getItemCount(),
+                            result_List.size
+                        )
+                        Toast.makeText(
+                            this,
+                            popularPeopleAdapter.getItemCount().toString(),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                })
+        }else {
+            Toast.makeText(applicationContext, R.string.Check_network_connection, Toast.LENGTH_LONG
+            ).show()
 
-                    popularPeopleAdapter.notifyItemRangeInserted(
-                        popularPeopleAdapter.getItemCount(),
-                        result_List.size
-                    )
-                    Toast.makeText(this,popularPeopleAdapter.getItemCount().toString(),Toast.LENGTH_LONG).show()
-                }
-            })
-            }
+        }
+        }
+
 
     override fun showPopularPeopleDetails(mresult: result) {
         val intent = Intent(this, DetailsPopularPeopleActivity::class.java)

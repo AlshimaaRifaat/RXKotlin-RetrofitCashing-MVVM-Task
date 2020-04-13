@@ -2,6 +2,8 @@ package com.example.task.network
 
 //import com.example.task.model.PopularPeopleModel
 import com.example.task.model.popularpeople.PopularPeopleModel
+import io.reactivex.Observable
+import io.reactivex.Single
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
