@@ -22,7 +22,7 @@
                 android:layout_height="@dimen/_135sdp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:background="#000"
+                android:scaleType="fitXY"
 
                 />
             <TextView
@@ -32,7 +32,6 @@
                 android:layout_marginTop="@dimen/_50sdp"
                 android:textSize="@dimen/_14sdp"
                 android:textStyle="bold"
-                android:text="name"
                 android:textColor="#000"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toEndOf="@id/img"
@@ -43,7 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/_11sdp"
-                android:text="Popularity"
+
                 android:textColor="@color/colorGerylight"
                 app:layout_constraintTop_toBottomOf="@id/tName"
                 app:layout_constraintStart_toEndOf="@id/img"

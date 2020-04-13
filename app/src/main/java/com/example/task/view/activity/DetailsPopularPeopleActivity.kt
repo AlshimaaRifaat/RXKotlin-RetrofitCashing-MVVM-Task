@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.task.Constants
@@ -44,7 +45,7 @@ class DetailsPopularPeopleActivity : AppCompatActivity() {
             Observer<PersonImagesModel> { personImagesModel ->
                 if (personImagesModel != null) {
                     recyclerPersonImages.apply {
-                        layoutManager= LinearLayoutManager(applicationContext)
+                        layoutManager= GridLayoutManager(applicationContext,2)
                         personImagesAdapter = PersonImagesAdapter(applicationContext,personImagesModel.profiles)
                         adapter=personImagesAdapter
                     }
