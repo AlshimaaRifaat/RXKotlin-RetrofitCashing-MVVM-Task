@@ -1,6 +1,8 @@
 package com.example.task
 
-object Constants {
-
-    const val IMAGE_BASE_URL = ""
+class Constants {
+    companion object {
+        const val IMAGE_BASE_URL: String = ""
+        const val BASE_URL: String = "https://api.themoviedb.org/3/"
+    }
 }

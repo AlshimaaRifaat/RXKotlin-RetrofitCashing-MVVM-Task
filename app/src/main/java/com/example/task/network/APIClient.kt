@@ -1,5 +1,6 @@
 package com.example.task.network
 
+import com.example.task.Constants
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.Retrofit
 import okhttp3.OkHttpClient
@@ -9,30 +10,25 @@ import java.util.concurrent.TimeUnit
 
 class APIClient {
 
+   private var retrofit: Retrofit? = null
+
+    init {
+        retrofit = Retrofit.Builder().baseUrl(Constants.BASE_URL).addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
 
     companion object {
-        private val BasuRl: String = "https://api.themoviedb.org/3/"
+      
+        @Volatile
+        private var mInstance: APIClient? = null
 
-        private var retrofit: Retrofit? = null
-        public fun getClient(): Retrofit? {
-            val gson = GsonBuilder()
-                .setLenient()
-                .create()
 
-            val okHttpClient = OkHttpClient.Builder()
-                .readTimeout(60, TimeUnit.SECONDS)
-                .connectTimeout(60, TimeUnit.SECONDS)
-                .build()
+        fun getInstance()= mInstance?: synchronized(this) {
+            mInstance?:APIClient().also { mInstance=it }
 
-            if (retrofit == null) {
-                retrofit = Retrofit.Builder()
-                    .baseUrl(BasuRl)
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .client(okHttpClient)
-                    .build()
-            }
-
-            return retrofit
         }
     }
+    val api: APIInterface
+        get() = retrofit!!.create<APIInterface>(APIInterface::class.java)
+
 }

@@ -30,9 +30,9 @@ class PopularPeopleViewModel : ViewModel(){
     }
 
     private fun getPopularPeopleListValues( api_key:String, language:String, page:Int) {
-        val call = APIClient.getClient()?.create(APIInterface::class.java)
-            ?.popularPeople_List(api_key,language,page)
-        call?.enqueue(object : Callback, retrofit2.Callback<PopularPeopleModel> {
+        val call = APIClient.getInstance().api
+            .popularPeople_List(api_key,language,page)
+        call.enqueue(object : Callback, retrofit2.Callback<PopularPeopleModel> {
             override fun onResponse(
                 call: Call<PopularPeopleModel>,
                 response: Response<PopularPeopleModel>
@@ -66,9 +66,9 @@ class PopularPeopleViewModel : ViewModel(){
     }
 
     private fun searchPeopleResultValues( api_key:String, language:String, query:String,page:Int,include_adult:Boolean,region:String) {
-        val call = APIClient.getClient()?.create(APIInterface::class.java)
-            ?.searchPeople(api_key,language,query,page,include_adult,region)
-        call?.enqueue(object : Callback, retrofit2.Callback<PopularPeopleModel> {
+        val call = APIClient.getInstance().api
+            .searchPeople(api_key,language,query,page,include_adult,region)
+        call.enqueue(object : Callback, retrofit2.Callback<PopularPeopleModel> {
             override fun onResponse(
                 call: Call<PopularPeopleModel>,
                 response: Response<PopularPeopleModel>
