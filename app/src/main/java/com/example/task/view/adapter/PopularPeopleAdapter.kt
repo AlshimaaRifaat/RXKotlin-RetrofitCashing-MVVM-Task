@@ -10,12 +10,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.example.task.Constants
 import com.example.task.R
 import com.example.task.interfaceview.PopularPeopleDetailsView
 import com.example.task.model.popularpeople.result
 //import com.example.task.model.result
 
-class PopularPeopleAdapter(var resultList: List<result>) : RecyclerView.Adapter<PopularPeopleAdapter.ViewHolder>() {
+class PopularPeopleAdapter(context: Context,var resultList: List<result>) : RecyclerView.Adapter<PopularPeopleAdapter.ViewHolder>() {
      lateinit var popularPeopleDetailsView :PopularPeopleDetailsView
     //this method is returning the view for each item in the list
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PopularPeopleAdapter.ViewHolder {
@@ -41,12 +43,16 @@ class PopularPeopleAdapter(var resultList: List<result>) : RecyclerView.Adapter<
 
     //the class is hodling the list view
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
+        private val context: Context = itemView.context
         fun bindItems(mResult: result) {
             val img = itemView.findViewById(R.id.img) as ImageView
             val tName  = itemView.findViewById(R.id.tName) as TextView
             val tPopularity  = itemView.findViewById(R.id.tPopularity) as TextView
-           // img.loadImage(Constants.IMAGE_BASE_URL+referncesModel.refrenceImage)
+
+            Glide.with(context)
+                .load(Constants.IMAGE_BASE_URL+mResult.profilePath)
+                .into(img)
+
             tName.text = mResult.name
             tPopularity.text = mResult.popularity.toString()
 

@@ -7,9 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.task.model.popularpeople.PopularPeopleModel
 import com.example.task.network.APIClient
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import retrofit2.Call
 import retrofit2.Response
 import javax.security.auth.callback.Callback
@@ -21,8 +18,7 @@ class PopularPeopleViewModel : ViewModel(){
 
     public var searchPeopleMutableLiveData: MutableLiveData<PopularPeopleModel>? = null
 
-    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
-    private val TAG = "PopularPeopleViewModel"
+
     public fun getPopularPeopleList(context: Context, Api_key: String, Language:String, Page:Int)
             : LiveData<PopularPeopleModel> {
         popularPeopleListMutableLiveData = MutableLiveData<PopularPeopleModel>()
@@ -36,12 +32,6 @@ class PopularPeopleViewModel : ViewModel(){
 
     private fun getPopularPeopleListValues( api_key:String, language:String, page:Int) {
 
-/*
-        compositeDisposable?.add(APIClient.getInstance().api
-            .popularPeople_List(api_key,language,page)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeOn(Schedulers.io())
-            .subscribe(popularPeopleListMutableLiveData?.setValue(o),"")*/
         val call = APIClient.getInstance().api
             .popularPeople_List(api_key,language,page)
         call.enqueue(object : Callback, retrofit2.Callback<PopularPeopleModel> {

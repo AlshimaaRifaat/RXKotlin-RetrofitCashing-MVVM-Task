@@ -1,8 +1,11 @@
 package com.example.task.view.activity
 
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -15,6 +18,7 @@ import com.example.task.model.popularpeople.result
 import com.example.task.paging.EndlessScrollListener
 import com.example.task.view.adapter.PopularPeopleAdapter
 import com.example.task.viewmodel.PopularPeopleViewModel
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.activity_search_result.*
 
@@ -41,7 +45,7 @@ class SearchResultActivity : AppCompatActivity(),PopularPeopleDetailsView{
         recyclerSearchPeople.apply {
             layoutManager = LinearLayoutManager(applicationContext)
 //            recyclerSearchPeople.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
-            searchPeopleAdapter = PopularPeopleAdapter(result_List)
+            searchPeopleAdapter = PopularPeopleAdapter(applicationContext,result_List)
             searchPeopleAdapter.onClick(this@SearchResultActivity)
             adapter = searchPeopleAdapter
 
@@ -65,23 +69,41 @@ class SearchResultActivity : AppCompatActivity(),PopularPeopleDetailsView{
         searchPeopleResult(my_page);
 
     }
-
+    val isConnected:Boolean
+        get() {
+            return (getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
+                .activeNetworkInfo?.isConnected == true
+        }
     private fun searchPeopleResult(page:Int) {
-        popularPeopleViewModel.searchPeopleResult(applicationContext,"889821def8006c20b36edf63a80b98fd",
-            "en-US",key,page,true,"").observe(this,
-            Observer<PopularPeopleModel> { popularPeopleModel ->
-                if(popularPeopleModel.results!=null) {
-                    this.totalPages=popularPeopleModel.totalPages
-                   // Toast.makeText(this,result_List.size.toString(),Toast.LENGTH_LONG).show()
-                    result_List.addAll(popularPeopleModel.results)
-                    searchPeopleAdapter.notifyItemRangeInserted(
-                        searchPeopleAdapter.getItemCount(),
-                        result_List.size
-                    )
-                    Toast.makeText(this,searchPeopleAdapter.getItemCount().toString(),Toast.LENGTH_LONG).show()
-                }
+        if (isConnected) {
+            progressBar_search.visibility = View.VISIBLE
+            popularPeopleViewModel.searchPeopleResult(
+                applicationContext, "889821def8006c20b36edf63a80b98fd",
+                "en-US", key, page, true, ""
+            ).observe(this,
+                Observer<PopularPeopleModel> { popularPeopleModel ->
+                    if (popularPeopleModel.results != null) {
+                        progressBar_search.visibility=View.GONE
+                        this.totalPages = popularPeopleModel.totalPages
+                        // Toast.makeText(this,result_List.size.toString(),Toast.LENGTH_LONG).show()
+                        result_List.addAll(popularPeopleModel.results)
+                        searchPeopleAdapter.notifyItemRangeInserted(
+                            searchPeopleAdapter.getItemCount(),
+                            result_List.size
+                        )
+                        Toast.makeText(
+                            this,
+                            searchPeopleAdapter.getItemCount().toString(),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
 
-            })
+                })
+        }else
+        {
+            Toast.makeText(applicationContext, R.string.Check_network_connection, Toast.LENGTH_LONG
+            ).show()
+        }
     }
 
     private fun getData() {

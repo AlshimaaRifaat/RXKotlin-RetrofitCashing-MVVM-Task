@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity(),PopularPeopleDetailsView{
         recyclerPopularPeople.apply {
             layoutManager = LinearLayoutManager(applicationContext)
             recyclerPopularPeople.setItemAnimator(DefaultItemAnimator())
-            popularPeopleAdapter = PopularPeopleAdapter(result_List)
+            popularPeopleAdapter = PopularPeopleAdapter(applicationContext,result_List)
             popularPeopleAdapter.onClick(this@MainActivity)
             adapter = popularPeopleAdapter
 
@@ -114,8 +114,7 @@ class MainActivity : AppCompatActivity(),PopularPeopleDetailsView{
                     }
                 })
         }else {
-            Toast.makeText(applicationContext, R.string.Check_network_connection, Toast.LENGTH_LONG
-            ).show()
+            Toast.makeText(applicationContext, R.string.Check_network_connection, Toast.LENGTH_LONG).show()
 
         }
         }
