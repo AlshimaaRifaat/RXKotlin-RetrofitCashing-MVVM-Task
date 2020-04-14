@@ -47,10 +47,10 @@
             android:background="@color/colorTrans"
             android:hint="@string/Search"
             android:paddingStart="@dimen/_40sdp"
-            android:imeOptions="actionGo"
             android:textColorHint="@color/colorGerylight"
-            android:inputType="textAutoCorrect"
-            android:textSize="13sp" />
+            android:textSize="13sp"
+            android:imeOptions="actionSearch"
+            android:inputType="text"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
     <androidx.recyclerview.widget.RecyclerView
@@ -74,4 +74,10 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="gone"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_15sdp"
+        app:layout_constraintTop_toBottomOf="@id/recyclerPopularPeople"
+        app:layout_constraintStart_toStartOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

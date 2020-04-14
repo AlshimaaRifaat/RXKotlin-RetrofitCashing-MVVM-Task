@@ -26,7 +26,7 @@ class DetailsPopularPeopleActivity : AppCompatActivity() {
     lateinit var name:String
     lateinit var popularity:String
     lateinit var image:String
-
+    lateinit var department:String
     lateinit var personImagesAdapter:PersonImagesAdapter
     lateinit var personImagesViewModel: PersonImagesViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,9 +60,14 @@ class DetailsPopularPeopleActivity : AppCompatActivity() {
         name=intent.getStringExtra("name")
         popularity=intent.getStringExtra("popularity")
         image=intent.getStringExtra("img")
+        department=intent.getStringExtra("department")
         tName.text=name
-        tPopularity.text=popularity
-        Glide.with(this).load(Constants.IMAGE_BASE_URL+image).into(img);
-        Toast.makeText(applicationContext, personId, Toast.LENGTH_LONG).show()
+        tPopularity.text="Popularity: "+popularity
+        tDepartment.text="Known for department : "+department
+
+            Glide.with(this).load(Constants.IMAGE_BASE_URL+image).into(img);
+
+
+
     }
 }

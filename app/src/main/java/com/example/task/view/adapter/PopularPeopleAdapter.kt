@@ -1,9 +1,6 @@
 package com.example.task.view.adapter
 
 import android.content.Context
-import android.os.Parcel
-import android.os.Parcelable
-import android.text.util.Linkify
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +12,7 @@ import com.example.task.Constants
 import com.example.task.R
 import com.example.task.interfaceview.PopularPeopleDetailsView
 import com.example.task.model.popularpeople.result
+
 //import com.example.task.model.result
 
 class PopularPeopleAdapter(context: Context,var resultList: List<result>) : RecyclerView.Adapter<PopularPeopleAdapter.ViewHolder>() {
