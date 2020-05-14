@@ -4,6 +4,7 @@ package com.example.task.network
 import com.example.task.model.personimages.PersonImagesModel
 import com.example.task.model.popularpeople.PopularPeopleModel
 import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -17,11 +18,11 @@ interface APIInterface {
 
     @GET("search/person")
     fun searchPeople(@Query("api_key") api_key: String,
-                           @Query("language") language: String,
-                           @Query("query") query: String,
-                           @Query("page") page: Int,
-                           @Query("include_adult") include_adult: Boolean,
-                           @Query("region") region: String): Call<PopularPeopleModel>
+                     @Query("language") language: String,
+                     @Query("query") query: String,
+                     @Query("page") page: Int,
+                     @Query("include_adult") include_adult: Boolean,
+                     @Query("region") region: String): Observable<PopularPeopleModel>
 
 
     @GET("person/{person_id}/images")

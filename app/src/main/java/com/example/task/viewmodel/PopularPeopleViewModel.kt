@@ -8,12 +8,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.task.model.popularpeople.PopularPeopleModel
 import com.example.task.network.APIClient
+import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.PublishSubject
 import retrofit2.Call
 import retrofit2.Response
+import java.util.concurrent.TimeUnit
 import javax.security.auth.callback.Callback
 
 
@@ -26,7 +29,7 @@ class PopularPeopleViewModel : ViewModel(){
 
     val compositeDisposable = CompositeDisposable()
 
-
+    private val autoCompletePublishSubject = PublishRelay.create<String>()
     public fun getPopularPeopleList(context: Context, Api_key: String, Language:String, Page:Int)
             : LiveData<PopularPeopleModel> {
         popularPeopleListMutableLiveData = MutableLiveData<PopularPeopleModel>()
@@ -78,7 +81,7 @@ class PopularPeopleViewModel : ViewModel(){
     }
 
 
-    public fun searchPeopleResult(context: Context, Api_key: String, Language:String, Query:String,Page:Int,Include_adult:Boolean,Region:String)
+    public fun searchPeopleResult(context: Context, Api_key: String, Language:String, Query: String,Page:Int,Include_adult:Boolean,Region:String)
             : LiveData<PopularPeopleModel> {
         searchPeopleMutableLiveData = MutableLiveData<PopularPeopleModel>()
         this.context = context
@@ -88,8 +91,8 @@ class PopularPeopleViewModel : ViewModel(){
         return searchPeopleMutableLiveData as MutableLiveData<PopularPeopleModel>
     }
 
-    private fun searchPeopleResultValues( api_key:String, language:String, query:String,page:Int,include_adult:Boolean,region:String) {
-        val call = APIClient.getInstance().api
+    private fun searchPeopleResultValues(api_key:String, language:String, query: String, page:Int, include_adult:Boolean, region:String) {
+   /*     val call = APIClient.getInstance().api
             .searchPeople(api_key,language,query,page,include_adult,region)
         call.enqueue(object : Callback, retrofit2.Callback<PopularPeopleModel> {
             override fun onResponse(
@@ -109,7 +112,28 @@ class PopularPeopleViewModel : ViewModel(){
                 searchPeopleMutableLiveData?.setValue(null)
 
             }
-        })
+        })*/
+       /* compositeDisposable.add(APIClient.getInstance().api
+                .searchPeople(api_key, language, query, page, include_adult, region)
+                .debounce(500, TimeUnit.MILLISECONDS)
+               *//* .filter {
+                    it?.isNullOrBlank()
+                }*//*
+                .subscribeOn(Schedulers.io())
+                .distinctUntilChanged()
+                .subscribe { response -> searchPeopleMutableLiveData?.postValue(response) })*/
+        autoCompletePublishSubject
+                .debounce(500, TimeUnit.MILLISECONDS)
+                .distinctUntilChanged()
+                .switchMap { APIClient.getInstance().api
+                        .searchPeople(api_key, language, query, page, include_adult, region) }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ response -> searchPeopleMutableLiveData?.postValue(response) },{t -> onFailure(t) })
 
     }
+    fun onOmnibarInputStateChanged(query: String) {
+        autoCompletePublishSubject.accept(query.trim())
+    }
+
 }

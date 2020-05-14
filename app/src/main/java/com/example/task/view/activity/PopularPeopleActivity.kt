@@ -24,6 +24,7 @@ import com.example.task.paging.EndlessScrollListener
 import com.example.task.view.activity.DetailsPopularPeopleActivity
 import com.example.task.view.adapter.PopularPeopleAdapter
 import com.example.task.viewmodel.PopularPeopleViewModel
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -45,6 +46,9 @@ class MainActivity : AppCompatActivity(),PopularPeopleDetailsView{
     var Status:Boolean=false
     var totalSearchPages:Int=0
     lateinit var endlessSearchScrollListener: EndlessScrollListener
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -134,7 +138,9 @@ class MainActivity : AppCompatActivity(),PopularPeopleDetailsView{
                 }else {
 
                     Status=true
-                    searchPeopleResult(my_page)
+                    popularPeopleViewModel.onOmnibarInputStateChanged(etSearch.text.toString())
+                  searchPeopleResult(my_page)
+
                 }
             }
 
@@ -152,6 +158,7 @@ class MainActivity : AppCompatActivity(),PopularPeopleDetailsView{
 
             }
         })
+
     }
 
     private fun SearchKeyBoard() {
