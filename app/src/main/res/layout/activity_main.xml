@@ -49,7 +49,7 @@
             android:paddingStart="@dimen/_40sdp"
             android:textColorHint="@color/colorGerylight"
             android:textSize="13sp"
-            android:imeOptions="actionSearch"
+            android:imeOptions="flagNoExtractUi|actionNext"
             android:inputType="text"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

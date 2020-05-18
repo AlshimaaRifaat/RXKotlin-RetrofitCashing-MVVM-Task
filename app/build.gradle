@@ -3,13 +3,13 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.3"
+    compileSdkVersion 28
+    //buildToolsVersion "29.0.3"
 
     defaultConfig {
         applicationId "com.example.task"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
 
@@ -50,7 +50,9 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
 //retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation ('com.squareup.retrofit2:retrofit:2.3.0'){
+        exclude module: 'okhttp'
+    }
     implementation 'com.squareup.retrofit2:converter-gson:2.2.0'
 //view model
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0'
@@ -64,6 +66,28 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.2.6'
 
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.7.1'
-
+//RX Relay
     implementation 'com.jakewharton.rxrelay2:rxrelay:2.1.1'
+
+
+    // okhttp
+    implementation 'com.squareup.retrofit2:converter-scalars:2.1.0'
+
+    implementation('com.alimuzaffar.lib:pinentryedittext:2.0.6') {
+        // Exclude is only needed if you already have
+        // androidx.appcompat as a dependency in your app.
+        exclude group: 'androidx.appcompat', module: 'appcompat'
+
+        // okhttp
+        def okHttpVersion = "3.11.0"
+        implementation "com.squareup.okhttp3:okhttp:$okHttpVersion"
+        implementation "com.squareup.okhttp3:logging-interceptor:$okHttpVersion"
+    }
+
+
+
+
+
+
+
 }

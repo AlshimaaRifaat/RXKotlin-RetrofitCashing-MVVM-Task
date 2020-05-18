@@ -2,16 +2,13 @@ package com.example.task
 
 
 
-import android.content.Context
 import android.content.Intent
-import android.net.ConnectivityManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView.OnEditorActionListener
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -24,7 +21,6 @@ import com.example.task.paging.EndlessScrollListener
 import com.example.task.view.activity.DetailsPopularPeopleActivity
 import com.example.task.view.adapter.PopularPeopleAdapter
 import com.example.task.viewmodel.PopularPeopleViewModel
-import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -177,18 +173,18 @@ class MainActivity : AppCompatActivity(),PopularPeopleDetailsView{
         })
     }
 
-    val isConnected:Boolean
+   /* val isConnected:Boolean
         get() {
             return (getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
                 .activeNetworkInfo?.isConnected == true
-        }
+        }*/
 
     private fun popularPeopleList (page:Int) {
-        if (isConnected) {
+      //  if (isConnected) {
             progressBar_people.visibility= View.VISIBLE
             popularPeopleViewModel.getPopularPeopleList(
                 applicationContext, "889821def8006c20b36edf63a80b98fd",
-                "en-US", page
+                "en-US", 1
             ).observe(this,
                 Observer<PopularPeopleModel> { popularPeopleModel ->
                     progressBar_people.visibility=View.GONE
@@ -206,10 +202,10 @@ class MainActivity : AppCompatActivity(),PopularPeopleDetailsView{
 
                     }
                 })
-        }else {
+        /*}else {
             Toast.makeText(applicationContext, R.string.Check_network_connection, Toast.LENGTH_LONG).show()
 
-        }
+        }*/
         }
 
 
@@ -229,7 +225,7 @@ class MainActivity : AppCompatActivity(),PopularPeopleDetailsView{
 
 
     private fun searchPeopleResult(page:Int) {
-        if (isConnected) {
+      //  if (isConnected) {
            // progressBar_people.visibility = View.VISIBLE
             popularPeopleViewModel.searchPeopleResult(
                 applicationContext, "889821def8006c20b36edf63a80b98fd",
@@ -251,11 +247,11 @@ class MainActivity : AppCompatActivity(),PopularPeopleDetailsView{
                     }
 
                 })
-        }else
+        /*}else
         {
             Toast.makeText(applicationContext, R.string.Check_network_connection, Toast.LENGTH_LONG
             ).show()
-        }
+        }*/
     }
 
 

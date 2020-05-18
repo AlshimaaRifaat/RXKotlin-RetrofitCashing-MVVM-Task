@@ -27,9 +27,8 @@ class PersonImagesViewModel : ViewModel(){
 
     private fun getPersonImagesListValues(person_id:String, api_key:String) {
 
-        val call = APIClient.getInstance().api
-            .personImages(person_id,api_key)
-        call.enqueue(object : Callback, retrofit2.Callback<PersonImagesModel> {
+        val call = APIClient.getInstance()?.personImages(person_id,api_key)
+        call?.enqueue(object : Callback, retrofit2.Callback<PersonImagesModel> {
             override fun onResponse(
                 call: Call<PersonImagesModel>,
                 response: Response<PersonImagesModel>

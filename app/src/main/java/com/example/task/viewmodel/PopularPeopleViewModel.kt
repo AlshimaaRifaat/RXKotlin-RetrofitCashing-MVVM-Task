@@ -11,13 +11,8 @@ import com.example.task.network.APIClient
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.PublishSubject
-import retrofit2.Call
-import retrofit2.Response
 import java.util.concurrent.TimeUnit
-import javax.security.auth.callback.Callback
 
 
 class PopularPeopleViewModel : ViewModel(){
@@ -43,7 +38,7 @@ class PopularPeopleViewModel : ViewModel(){
 
     private fun getPopularPeopleListValues( api_key:String, language:String, page:Int) {
         compositeDisposable.add(
-            APIClient.getInstance().api
+            APIClient.getInstance()
                 .popularPeople_List(api_key,language,page)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
@@ -125,15 +120,14 @@ class PopularPeopleViewModel : ViewModel(){
         autoCompletePublishSubject
                 .debounce(500, TimeUnit.MILLISECONDS)
                 .distinctUntilChanged()
-                .switchMap { APIClient.getInstance().api
-                        .searchPeople(api_key, language, query, page, include_adult, region) }
+                .switchMap { APIClient.getInstance()?.searchPeople(api_key, language, query, page, include_adult, region) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ response -> searchPeopleMutableLiveData?.postValue(response) },{t -> onFailure(t) })
 
     }
     fun onOmnibarInputStateChanged(query: String) {
-        autoCompletePublishSubject.accept(query.trim())
+        autoCompletePublishSubject.accept(query)
     }
 
 }
